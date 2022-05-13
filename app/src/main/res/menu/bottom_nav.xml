@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_tool"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="@string/title_tool"
+        android:textColor="#4682b4"/>
+
+    <item
+        android:id="@+id/navigation_photopdf"
+        android:icon="@drawable/ic_baseline_photo_camera_24"
+        android:title="@string/title_photo"
+        android:textColor="#4682b4"/>
+
+    <item
+        android:id="@+id/navigation_myfile"
+        android:icon="@drawable/ic_baseline_folder_24"
+        android:title="@string/title_file"
+        android:textColor="#4682b4"/>
+
+
+</menu>

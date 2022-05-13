@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Tools</string>
+
+    <string name="nav_stringopen">Mở</string>
+    <string name="nav_stringclose">Đóng</string>
+
+        <string name="app_namenav">Bottom Navigation</string>
+        <string name="title_tool">Tools</string>
+        <string name="title_photo">Photo PDF</string>
+        <string name="title_file">My Files</string>
+</resources>
+
