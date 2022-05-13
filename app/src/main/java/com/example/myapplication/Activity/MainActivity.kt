@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -30,15 +29,24 @@ import com.example.myapplication.Model.ToolModel
 import com.example.myapplication.R
 import com.itextpdf.io.image.ImageData
 import com.itextpdf.io.image.ImageDataFactory
+import com.itextpdf.kernel.geom.PageSize
 import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.layout.Document
+import com.itextpdf.layout.element.Cell
 import com.itextpdf.layout.element.Image
+import com.itextpdf.layout.element.Table
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.*
 
 
 class MainActivity : AppCompatActivity() {
+    val x = 568
+    val y = 840
+    var m = 2
+    var n = m + (1*m)
+    val withtable = floatArrayOf(50f, 50f, 50f, 50F)
+
     private val REQUEST_EXTERNAL_STORAGE = 1
     private val PERMISSIONS_STORAGE = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -66,8 +74,7 @@ class MainActivity : AppCompatActivity() {
         R.drawable.anh3,
         R.drawable.anh4,
         R.drawable.anh5,
-        R.drawable.anh6,
-        R.drawable.anh8
+        R.drawable.anh6
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,19 +116,34 @@ class MainActivity : AppCompatActivity() {
             val output: OutputStream = FileOutputStream(file)
             val writer: PdfWriter = PdfWriter(file)
             val pdfdocument: PdfDocument = PdfDocument(writer)
+            pdfdocument.defaultPageSize = PageSize.A4
             val document: Document = Document(pdfdocument)
-            for(i in bitmap.indices)
-            {
+
+            val table: Table = Table(withtable)
+
+            var listImage: ArrayList<Image> = ArrayList()
+            // thêm vào mảng image
+            for (i in bitmap.indices) {
                 val bos = ByteArrayOutputStream()
                 bitmap.get(i).compress(Bitmap.CompressFormat.PNG, 0, bos)
                 val bitmapdata = bos.toByteArray()
                 var imagedata: ImageData = ImageDataFactory.create(bitmapdata)
                 var image: Image = Image(imagedata)
-                image.setWidth(100F)
-                image.setHeight(100F)
-                document.add(image)
-                //coordinateofcell()
+                listImage.add(image)
             }
+            //load ra pdf
+            for(a in listImage.indices)
+            {
+            for (i in 0 until m) {
+                for (j in 0 until n) {
+                    run {
+                       // document.add(listImage.get(a))
+                            table.addCell(Cell().add(listImage.get(a).setAutoScale(true)))
+                        }
+                    }
+                }
+            }
+            document.add(table)
             document.close()
             Toast.makeText(this,"Tạo thành công", Toast.LENGTH_SHORT).show()
 
@@ -130,6 +152,7 @@ class MainActivity : AppCompatActivity() {
             target.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             val intent = Intent.createChooser(target, "Open File")
             startActivity(intent);
+            coordinateofcell()
 
         }catch (e: FileNotFoundException)
         {
@@ -139,14 +162,46 @@ class MainActivity : AppCompatActivity() {
 
     fun coordinateofcell()
     {
-        var M:Array<IntArray> = Array(568,{IntArray(840)})
-        for(i in M.indices)
-        {
-            for(j in M[i].indices)
-            {
-               // Toast.makeText(this, ""+, Toast.LENGTH_SHORT).show()
-            }
+        var heigh = n*(withtable.size-1)
+        var with = withtable.size
+        val h = Array(with) {
+            IntArray(
+                heigh
+            )
         }
+        val c = Array(with) { IntArray(heigh) }
+        var demanh: Int = 0
+      //  Log.d("AAA", ""+heigh + with)
+            for (i in 0 until with) {
+                for (j in 0 until heigh) {
+
+                        if (j == 0 && i == 0) {
+                            h[i][j] = 0
+                            val toadoA: Int = h[i][j]
+                            Log.d("Toa do $i,$j có", "0, $toadoA")
+                            demanh++
+                        } else if (j == 0 && i != 0) {
+                            h[i][j] = y / with * i
+                            val toadoA: Int = h[i][j]
+                            Log.d("Toa do $i,$j có", "0, $toadoA")
+                            demanh++
+                        } else if (j != 0 && i == 0) {
+                            c[i][j] = x / heigh * j
+                            val toadoB: Int = c[i][j]
+                            Log.d("Toa do $i,$j có", "$toadoB ,0")
+                            demanh++
+                        } else if (j != 0 && i != 0) {
+                            h[i][j] = x / with * i
+                            c[i][j] = y / heigh * j
+                            val toadoA: Int = h[i][j]
+                            val toadoB: Int = c[i][j]
+                            Log.d("Toa do $i,$j có", "$toadoA,$toadoB")
+                            demanh++
+                        }
+                }
+            }
+        Log.d("SHOW", "Số lượng ảnh trong pdf là: $demanh")
+
     }
 
     fun load_recyclerImport()
